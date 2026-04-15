@@ -49,22 +49,22 @@ export const getAllSubjects = async (id: string) => {
 };
 
 export const updateSubject = async (id: string, data: Partial<NewSubject>) => {
-  const existingSubject = await getAllSubjects(id);
-  if(!existingSubject) {
+  const [subject] = await db.update(subjects).set(data).where(eq(subjects.id, id)).returning();
+
+  if(!subject) {
     throw new Error(`Subject with id: ${id} not found`)
   };
 
-  const [subject] = await db.update(subjects).set(data).where(eq(subjects.id, id)).returning();
   return subject;
 }
 
 export const deleteSubject = async (id: string) => {
-  const existingSubject = await getAllSubjects(id);
-  if(!existingSubject) {
+  const [subject] = await db.delete(subjects).where(eq(subjects.id, id)).returning();
+
+  if(!subject) {
     throw new Error(`Subject with id: ${id} not found`)
   };
 
-  const [subject] = await db.delete(subjects).where(eq(subjects.id, id)).returning();
   return subject;
 }
 
@@ -82,22 +82,22 @@ export const getAllTasks = async (id: string) => {
 };
 
 export const updateTask = async (id: string, data: Partial<NewTask>) => {
-  const existingTask = await getAllTasks(id);
-  if(!existingTask) {
+  const [task] = await db.update(tasks).set(data).where(eq(tasks.id, id)).returning();
+
+  if(!task) {
     throw new Error(`Task with id: ${id} not found`)
   };
 
-  const [task] = await db.update(tasks).set(data).where(eq(tasks.id, id)).returning();
   return task;
 };
 
 export const deleteTask = async (id: string) => {
-  const existingTask = await getAllTasks(id);
-  if(!existingTask) {
+  const [task] = await db.delete(tasks).where(eq(tasks.id, id)).returning();
+
+  if(!task) {
     throw new Error(`Task with id: ${id} not found`)
   };
 
-  const [task] = await db.delete(tasks).where(eq(tasks.id, id)).returning();
   return task;
 }
 
@@ -108,6 +108,9 @@ export const completeTask = async (id: string) => {
     .where(eq(tasks.id, id))
     .returning();
 
+  if (!task) {
+    throw new Error(`Task with id: ${id} not found`);
+  }
   return task;
 };
 
